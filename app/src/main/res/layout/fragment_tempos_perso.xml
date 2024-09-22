@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".temposPerso">
+
+    <!-- Título del temporizador -->
+    <TextView
+        android:id="@+id/tv_temporizador_titulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:text="@string/tempo"
+        android:textColor="@color/light_blue"
+        android:textSize="48sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Texto del temporizador que muestra el tiempo restante -->
+    <TextView
+        android:id="@+id/textView_timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:text="00:00"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="96sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_temporizador_titulo" />
+
+    <!-- Botón para iniciar/pausar el temporizador -->
+
+    <!-- Botón para volver atrás -->
+    <Button
+        android:id="@+id/button_start"
+        android:layout_width="187dp"
+        android:layout_height="112dp"
+        android:layout_marginTop="124dp"
+        android:backgroundTint="@color/light_blue"
+        android:text="@string/comenzar"
+        android:textColor="@color/white"
+        android:textSize="29sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_timer" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
