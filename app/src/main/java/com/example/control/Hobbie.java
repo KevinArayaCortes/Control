@@ -35,14 +35,14 @@ public class Hobbie extends AppCompatActivity {
                     return;
                 }
 
-                String input = s.toString().replace(":", ""); // Eliminar los ':'
+                String input = s.toString().replace(":", "");
                 if (input.length() >= 3) {
                     String minutes = input.substring(0, 2);
                     String seconds = input.substring(2);
 
                     isUpdating = true;
                     editTextTime.setText(minutes + ":" + seconds);
-                    editTextTime.setSelection(editTextTime.getText().length()); // Mover el cursor al final
+                    editTextTime.setSelection(editTextTime.getText().length());
                 }
             }
 

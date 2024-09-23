@@ -35,7 +35,7 @@ public class tempoPersonalizado extends AppCompatActivity {
         initialTimeInMillis = timeLeftInMillis; // Guardar tiempo inicial para reiniciar
 
         // Inicializar MediaPlayer con un sonido de alarma
-        mediaPlayer = MediaPlayer.create(this, R.raw.alarma); // Asegúrate de tener un archivo de sonido en la carpeta res/raw
+        mediaPlayer = MediaPlayer.create(this, R.raw.alarma);
         alarmPlaying = false;
 
         startButton.setOnClickListener(new View.OnClickListener() {

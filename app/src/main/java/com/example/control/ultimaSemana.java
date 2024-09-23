@@ -24,7 +24,7 @@ public class ultimaSemana extends AppCompatActivity {
         TextView sabadoTiempo = findViewById(R.id.sabado_tiempo);
         TextView domingoTiempo = findViewById(R.id.domingo_tiempo);
 
-        // Datos de ejemplo: tiempos de ejercicio en minutos
+        // Ejemplo: tiempos de ejercicio en minutos
         Map<String, Integer> tiemposEjercicio = new HashMap<>();
         tiemposEjercicio.put("Lunes", 30);
         tiemposEjercicio.put("Martes", 45);

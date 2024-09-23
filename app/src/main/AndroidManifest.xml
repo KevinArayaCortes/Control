@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Control"
         tools:targetApi="31">
         <activity
+            android:name=".crearDieta"
+            android:exported="false" />
+        <activity
             android:name=".ultimaSemana"
             android:exported="false" />
         <activity

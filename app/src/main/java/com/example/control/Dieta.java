@@ -25,4 +25,10 @@ public class Dieta extends AppCompatActivity {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
     }
+
+    public void crear(View v) {
+        Intent i = new Intent(this, crearDieta.class);
+        startActivity(i);
+    }
+
 }

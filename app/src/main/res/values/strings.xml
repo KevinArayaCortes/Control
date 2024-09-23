@@ -41,4 +41,5 @@
     <string name="reto">Desafíate a ti mismo y Mejora tus tiempos de Actividad Física de la semana pasada</string>
     <string name="ver">Ver</string>
     <string name="superar">¡Superate!</string>
+    <string name="hora">Ingresa Hora en ciclo 24:00</string>
 </resources>

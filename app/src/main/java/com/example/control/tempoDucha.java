@@ -16,7 +16,7 @@ public class tempoDucha extends AppCompatActivity {
     private Button startButton;
     private CountDownTimer countDownTimer;
     private boolean timerRunning;
-    private boolean alarmPlaying; // Variable para verificar si la alarma está sonando
+    private boolean alarmPlaying;
     private long timeLeftInMillis = 900000; // 15 minutos
     private final long initialTimeInMillis = 900000; // Guardamos el tiempo inicial para restaurarlo
     private MediaPlayer mediaPlayer;
@@ -66,7 +66,7 @@ public class tempoDucha extends AppCompatActivity {
                 // Reproducir la alarma
                 if (mediaPlayer != null) {
                     mediaPlayer.start();
-                    alarmPlaying = true; // La alarma está sonando
+                    alarmPlaying = true;
                     startButton.setText(getString(R.string.detener_alarma)); // Cambiar el texto del botón
                 }
             }
