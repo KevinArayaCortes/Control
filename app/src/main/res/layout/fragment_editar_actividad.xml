@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/editarActividadLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical"
+    android:padding="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".editarActividadFragment">
+
+    <!-- EditText para editar el nombre de la actividad -->
+    <TextView
+        android:id="@+id/tvEditarActividad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/nombre"
+        android:textColor="@color/white"
+        android:textSize="34sp" />
+
+    <EditText
+        android:id="@+id/etEditarActividad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:ems="10"
+        android:inputType="text"
+        android:textColor="@color/white"
+        android:textSize="34sp" />
+
+    <!-- EditText para editar la hora o duración de la actividad -->
+    <TextView
+        android:id="@+id/tvEditarTiempo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/cTiempo"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/etEditarTiempo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:ems="5"
+        android:maxLength="5"
+        android:inputType="time"
+        android:textColor="@color/white"
+        android:textSize="34sp" />
+
+    <!-- Botón Aceptar -->
+    <Button
+        android:id="@+id/btnAceptarEditarActividad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/aceptar"
+        android:textSize="34sp" />
+
+    <!-- Botón Borrar Actividad -->
+    <Button
+        android:id="@+id/btnBorrarActividad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/borrar"
+        android:textSize="34sp" />
+
+    <!-- Botón Comenzar -->
+    <Button
+        android:id="@+id/btnComenzar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/comenzar"
+        android:textSize="34sp" />
+
+</LinearLayout>

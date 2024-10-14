@@ -33,13 +33,4 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="86dp"
-        android:layout_height="85dp"
-        android:clickable="true"
-        app:srcCompat="@android:drawable/ic_menu_revert"
-        tools:layout_editor_absoluteX="18dp"
-        tools:layout_editor_absoluteY="16dp" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

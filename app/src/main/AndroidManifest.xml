@@ -12,55 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Control"
         tools:targetApi="31">
-        <activity
-            android:name=".crearDieta"
-            android:exported="false" />
-        <activity
-            android:name=".ultimaSemana"
-            android:exported="false" />
-        <activity
-            android:name=".Desafio"
-            android:exported="false"
-            android:theme="@style/Theme.Control" />
-        <activity
-            android:name=".Semanas"
-            android:exported="false" />
-        <activity
-            android:name=".Historial"
-            android:exported="false" />
-        <activity
-            android:name=".tempoPersonalizado"
-            android:exported="false" />
-        <activity
-            android:name=".Hobbie"
-            android:exported="false" />
-        <activity
-            android:name=".Dieta"
-            android:exported="false" />
-        <activity
-            android:name=".ActividadFisica"
-            android:exported="false" />
-        <activity
-            android:name=".tempoDientes"
-            android:exported="false" />
-        <activity
-            android:name=".Higienico"
-            android:exported="false" />
-        <activity
-            android:name=".Menu"
-            android:exported="false" />
-        <activity
-            android:name=".tempoDucha"
-            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

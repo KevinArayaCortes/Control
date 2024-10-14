@@ -12,7 +12,9 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class tablaDieta extends Fragment {
@@ -32,15 +34,10 @@ public class tablaDieta extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_tabla_dieta, container, false);
 
-        // Inicializa SharedPreferences
         sharedPreferences = requireActivity().getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
-
-        // Inicializa la tabla
         tableLayout = rootView.findViewById(R.id.tableLayoutHorarios);
 
-        // Carga los datos guardados y llena la tabla
         cargarDatosEnTabla();
-
         return rootView;
     }
 
@@ -48,16 +45,13 @@ public class tablaDieta extends Fragment {
         nombres = sharedPreferences.getStringSet(KEY_NOMBRES, new HashSet<>());
         horas = sharedPreferences.getStringSet(KEY_HORAS, new HashSet<>());
 
-        // Verifica que los sets no estén vacíos
         if (nombres != null && horas != null && !nombres.isEmpty() && !horas.isEmpty()) {
-            String[] nombresArray = nombres.toArray(new String[0]);
-            String[] horasArray = horas.toArray(new String[0]);
-
-            // Asegúrate de que ambos arrays tengan el mismo tamaño
-            int minLength = Math.min(nombresArray.length, horasArray.length);
+            List<String> nombresList = new ArrayList<>(nombres);
+            List<String> horasList = new ArrayList<>(horas);
+            int minLength = Math.min(nombresList.size(), horasList.size());
 
             for (int i = 0; i < minLength; i++) {
-                agregarFilaATabla(nombresArray[i], horasArray[i]);
+                agregarFilaATabla(nombresList.get(i), horasList.get(i));
             }
         }
     }
@@ -65,20 +59,34 @@ public class tablaDieta extends Fragment {
 
     private void agregarFilaATabla(final String nombre, final String hora) {
         TableRow row = new TableRow(getContext());
-        row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
+        row.setLayoutParams(new TableRow.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-        // Crea las celdas
         TextView textViewNombre = new TextView(getContext());
         textViewNombre.setText(nombre);
-        textViewNombre.setTextColor(getResources().getColor(R.color.white)); // Color blanco
+        textViewNombre.setTextColor(getResources().getColor(R.color.white));
         row.addView(textViewNombre);
 
         TextView textViewHora = new TextView(getContext());
         textViewHora.setText(hora);
-        textViewHora.setTextColor(getResources().getColor(R.color.white)); // Color blanco
+        textViewHora.setTextColor(getResources().getColor(R.color.white));
         row.addView(textViewHora);
 
-        // Agrega la fila a la tabla
+        row.setOnClickListener(v -> abrirEditarDietaFragment(nombre, hora));
+
         tableLayout.addView(row);
+    }
+
+    private void abrirEditarDietaFragment(String nombre, String hora) {
+        editarDietaFragment fragment = new editarDietaFragment();
+        Bundle args = new Bundle();
+        args.putString("nombre", nombre);
+        args.putString("hora", hora);
+        fragment.setArguments(args);
+
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.contenedor, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }
