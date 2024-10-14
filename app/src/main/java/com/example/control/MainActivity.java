@@ -1,49 +1,91 @@
 package com.example.control;
 
-import android.content.Intent;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
+
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        }
 
-    public void higienico(View v){
-        Intent i = new Intent(this,Higienico.class);
-        startActivity(i);
-    }
+        // Configuración del Toolbar
+        Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(tb);
 
-    public void actividad(View v){
-        Intent i = new Intent(this,ActividadFisica.class);
-        startActivity(i);
-    }
+        // Configuración del NavigationView (identificador @id/barra)
+        NavigationView navigationView = findViewById(R.id.barra);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                if(id==R.id.op1){
+                    ActividadFisicaFragment a = new ActividadFisicaFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,a).commit();
+                }
+                else if(id==R.id.op2){
+                    HigienicoFragment h = new HigienicoFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,h).commit();
+                }
+                else if(id==R.id.op3){
+                    HobbieFragment ho = new HobbieFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,ho).commit();
+                }
+                else if(id==R.id.op4){
+                    DietaFragment d = new DietaFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,d).commit();
+                }
+                else if(id==R.id.op5){
+                    HistorialFragment hi = new HistorialFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,hi).commit();
+                }
+                else if(id==R.id.op6){
+                    DesafioFragment de = new DesafioFragment();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.contenedor,de).commit();
+                }
 
-    public void dieta(View v){
-        Intent i = new Intent(this,Dieta.class);
-        startActivity(i);
-    }
+                return false;
+            }
+        });
+        DrawerLayout dl = findViewById(R.id.Main);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
-    public void hobbie(View v){
-        Intent i = new Intent(this,Hobbie.class);
-        startActivity(i);
-    }
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this,
+                dl,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
+        dl.addDrawerListener(toggle);
+        toggle.syncState();
 
-    public void Historial(View v){
-        Intent i = new Intent(this,Historial.class);
-        startActivity(i);
-    }
-
-    public void Desafio(View v){
-        Intent i = new Intent(this,Desafio.class);
-        startActivity(i);
+        tb.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               if(dl.isDrawerOpen(GravityCompat.START)){
+                   dl.closeDrawer(GravityCompat.START);
+               }
+               else{
+                   dl.openDrawer((int) Gravity.START);
+               }
+            }
+        });
     }
 
 }

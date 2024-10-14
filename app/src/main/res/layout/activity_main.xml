@@ -1,107 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tempoPerso"
+    android:id="@+id/Main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
     android:foregroundTint="#0592FF"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/menu"
-        android:layout_width="116dp"
-        android:layout_height="67dp"
-        android:layout_marginTop="44dp"
-        android:background="#00FFFFFF"
-        android:backgroundTint="#FFFFFF"
-        android:foregroundTint="#FFFFFF"
-        android:text="@string/menu"
-        android:textColor="@color/light_blue"
-        app:autoSizeTextType="uniform"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/higienicobtn"
-        android:layout_width="163dp"
-        android:layout_height="71dp"
-        android:layout_marginTop="28dp"
-        android:backgroundTint="@color/light_blue"
-        android:onClick="higienico"
-        android:text="@string/btnHigienico"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/menu"
-        tools:ignore="TextContrastCheck" />
+        <!-- Toolbar -->
+        <include
+            android:id="@+id/include"
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/dietabtn"
-        android:layout_width="163dp"
-        android:layout_height="71dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/light_blue"
-        android:onClick="dieta"
-        android:text="@string/btnDieta"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@+id/actFisicabtn"
-        app:layout_constraintTop_toBottomOf="@+id/actFisicabtn"
-        tools:ignore="TextContrastCheck" />
+        <!-- FrameLayout debajo del Toolbar -->
+        <FrameLayout
+            android:id="@+id/contenedor"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/include"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-    <Button
-        android:id="@+id/hobbiesbtn"
-        android:layout_width="163dp"
-        android:layout_height="71dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/light_blue"
-        android:onClick="hobbie"
-        android:text="@string/btnHobbies"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@+id/dietabtn"
-        app:layout_constraintTop_toBottomOf="@+id/dietabtn"
-        tools:ignore="TextContrastCheck" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/historialbtn"
-        android:layout_width="163dp"
-        android:layout_height="71dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/light_blue"
-        android:onClick="Historial"
-        android:text="@string/btnHistorial"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@+id/hobbiesbtn"
-        app:layout_constraintTop_toBottomOf="@+id/hobbiesbtn"
-        tools:ignore="TextContrastCheck" />
+    <!-- NavigationView para el Drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/barra"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/light_blue"
+        app:headerLayout="@layout/header"
+        app:itemTextColor="@color/white"
+        android:layout_gravity="start"
+        app:menu="@menu/menu" />
 
-    <Button
-        android:id="@+id/desafiobtn"
-        android:layout_width="163dp"
-        android:layout_height="71dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/light_blue"
-        android:onClick="Desafio"
-        android:text="@string/btnDesafio"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@+id/historialbtn"
-        app:layout_constraintTop_toBottomOf="@+id/historialbtn"
-        tools:ignore="TextContrastCheck" />
-
-    <Button
-        android:id="@+id/actFisicabtn"
-        android:layout_width="163dp"
-        android:layout_height="71dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/light_blue"
-        android:onClick="actividad"
-        android:text="@string/btnActividad"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@+id/higienicobtn"
-        app:layout_constraintTop_toBottomOf="@+id/higienicobtn"
-        tools:ignore="TextContrastCheck" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

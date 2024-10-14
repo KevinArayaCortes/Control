@@ -6,15 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".Higienico">
+    tools:context=".HigienicoFragment">
 
     <Button
         android:id="@+id/button3"
         android:layout_width="163dp"
         android:layout_height="71dp"
-        android:layout_marginBottom="344dp"
+        android:layout_marginTop="112dp"
         android:backgroundTint="@color/light_blue"
-        android:onClick="ducha"
         android:text="@string/ducha"
         android:textColor="@color/white"
         android:textSize="24sp"
@@ -22,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button2"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.194" />
 
     <TextView
         android:id="@+id/higienicoT"
@@ -46,27 +45,13 @@
         android:id="@+id/button2"
         android:layout_width="163dp"
         android:layout_height="71dp"
-        android:layout_marginBottom="472dp"
+        android:layout_marginTop="104dp"
         android:backgroundTint="@color/light_blue"
-        android:onClick="dientes"
         android:text="@string/dientes"
         android:textColor="@color/white"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/higienicoT"
-        app:layout_constraintVertical_bias="0.918" />
+        app:layout_constraintTop_toBottomOf="@+id/higienicoT" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="111dp"
-        android:layout_height="101dp"
-        android:layout_marginBottom="44dp"
-        android:clickable="true"
-        android:onClick="inicio"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/casa" />
 </androidx.constraintlayout.widget.ConstraintLayout>

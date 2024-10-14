@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".Hobbie">
+    tools:context=".HobbieFragment">
 
     <EditText
         android:id="@+id/editTextTime"
@@ -25,25 +25,14 @@
 
     <Button
         android:id="@+id/buttonAceptar"
-        android:layout_width="137dp"
-        android:layout_height="54dp"
+        android:layout_width="166dp"
+        android:layout_height="79dp"
+        android:layout_marginBottom="152dp"
         android:onClick="aceptarTiempo"
         android:text="@string/aceptar"
-        app:layout_constraintBottom_toTopOf="@+id/imageView5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="111dp"
-        android:layout_height="101dp"
-        android:layout_marginBottom="4dp"
-        android:clickable="true"
-        android:onClick="inicio"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/casa" />
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

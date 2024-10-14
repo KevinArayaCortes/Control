@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/op1"
+        android:title="@string/btnActividad" />
+    <item
+        android:id="@+id/op2"
+        android:title="@string/btnHigienico" />
+    <item
+        android:id="@+id/op3"
+        android:title="@string/btnHobbies" />
+    <item
+        android:id="@+id/op4"
+        android:title="@string/btnDieta" />
+    <item
+        android:id="@+id/op5"
+        android:title="@string/btnHistorial" />
+    <item
+        android:id="@+id/op6"
+        android:title="@string/btnDesafio" />
+</menu>

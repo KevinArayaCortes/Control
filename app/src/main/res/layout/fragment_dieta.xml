@@ -7,18 +7,6 @@
     android:background="@color/black"
     tools:context=".DietaFragment">
 
-    <ImageView
-        android:id="@+id/imageView10"
-        android:layout_width="115dp"
-        android:layout_height="107dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:onClick="inicio"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/casa" />
-
     <TextView
         android:id="@+id/textView6"
         android:layout_width="111dp"
@@ -31,25 +19,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/crearDietaButton"
+        android:layout_width="186dp"
+        android:layout_height="81dp"
+        android:layout_marginBottom="135dp"
+        android:text="@string/crear_tempo"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
+        android:id="@+id/fragmentContainerView2"
+        android:name="com.example.control.tablaDieta"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/crearDietaButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
-
-    <Button
-        android:id="@+id/crearDietaButton"
-        android:layout_width="151dp"
-        android:layout_height="67dp"
-        android:layout_marginBottom="12dp"
-        android:onClick="crear"
-        android:text="@string/crear_tempo"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

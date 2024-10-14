@@ -24,9 +24,5 @@ public class Historial extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void cargar(View v) {
-        Intent i = new Intent(this, Semanas.class);
-        startActivity(i);
-    }
 
 }

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".tempoPersonalizado">
+    tools:context=".tempoPersonalizadoFragment">
 
     <TextView
         android:id="@+id/textView_timer"
@@ -38,7 +38,6 @@
         android:layout_width="86dp"
         android:layout_height="85dp"
         android:clickable="true"
-        android:onClick="hobbie"
         app:srcCompat="@android:drawable/ic_menu_revert"
         tools:layout_editor_absoluteX="18dp"
         tools:layout_editor_absoluteY="16dp" />

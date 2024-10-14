@@ -5,14 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".temposPerso">
+    tools:context=".tempoDuchaFragment">
 
     <TextView
-        android:id="@+id/tv_temporizador_titulo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="@string/tempo"
+        android:id="@+id/Ducha"
+        android:layout_width="189dp"
+        android:layout_height="83dp"
+        android:layout_marginTop="88dp"
+        android:background="#00FFFFFF"
+        android:backgroundTint="#FFFFFF"
+        android:drawableTint="#FFFFFF"
+        android:foregroundTint="#FFFFFF"
+        android:text="@string/ducha"
         android:textColor="@color/light_blue"
         android:textSize="48sp"
         app:autoSizeTextType="uniform"
@@ -22,28 +26,29 @@
 
     <TextView
         android:id="@+id/textView_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="00:00"
+        android:layout_width="286dp"
+        android:layout_height="158dp"
+        android:layout_marginTop="224dp"
+        android:text="@string/tempoDu"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="96sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_temporizador_titulo" />
-
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button_start"
         android:layout_width="187dp"
         android:layout_height="112dp"
-        android:layout_marginTop="124dp"
+        android:layout_marginTop="96dp"
         android:backgroundTint="@color/light_blue"
         android:text="@string/comenzar"
         android:textColor="@color/white"
         android:textSize="29sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_timer" />
 
