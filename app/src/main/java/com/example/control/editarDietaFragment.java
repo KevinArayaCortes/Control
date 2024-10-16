@@ -1,5 +1,6 @@
 package com.example.control;
 
+import com.example.control.utils.DeviceIdManager;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentReference;
 
@@ -21,9 +22,10 @@ import androidx.fragment.app.Fragment;
 public class editarDietaFragment extends Fragment {
 
     private EditText etEditarNombre, etEditarHora;
-    private Button btnAceptarEditar;
+    private Button btnAceptarEditar, btnBorrar;
     private FirebaseFirestore db;
     private String dietaId;  // Para almacenar el ID del documento de Firestore
+    private String deviceId; // Para almacenar el ID único del dispositivo
 
     public editarDietaFragment() {
         // Constructor vacío requerido
@@ -46,16 +48,17 @@ public class editarDietaFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        super.onViewCreated(view, savedInstanceState); // Esta línea debe estar presente.
 
         // Inicializa las vistas
         etEditarNombre = view.findViewById(R.id.etEditarNombre);
         etEditarHora = view.findViewById(R.id.etEditarHora);
         btnAceptarEditar = view.findViewById(R.id.btnAceptarEditar);
-        Button btnBorrar = view.findViewById(R.id.btnBorrar);
+        btnBorrar = view.findViewById(R.id.btnBorrar);
 
         // Inicializa Firestore
         db = FirebaseFirestore.getInstance();
+        deviceId = DeviceIdManager.getDeviceId(requireContext()); // Obtener el ID único del dispositivo
 
         // Recupera los datos enviados y muestra en los inputs
         if (getArguments() != null) {

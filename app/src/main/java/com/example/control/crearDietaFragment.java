@@ -1,5 +1,6 @@
 package com.example.control;
 
+import com.example.control.utils.DeviceIdManager;
 import com.google.firebase.firestore.FirebaseFirestore;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,6 +23,7 @@ public class crearDietaFragment extends Fragment {
     private EditText etNombre, etHora;
     private Button btnGuardar;
     private FirebaseFirestore db;
+    private String deviceId; // Para almacenar el ID del dispositivo
 
     public crearDietaFragment() {
         // Constructor vacío requerido
@@ -43,6 +45,7 @@ public class crearDietaFragment extends Fragment {
 
         // Inicializa Firestore
         db = FirebaseFirestore.getInstance();
+        deviceId = DeviceIdManager.getDeviceId(requireContext()); // Obtener el deviceId
 
         // Formato automático de la hora
         etHora.addTextChangedListener(new TextWatcher() {
@@ -83,12 +86,14 @@ public class crearDietaFragment extends Fragment {
             return;
         }
 
-        // Crea un nuevo documento en la colección "Dieta"
+        // Crea un nuevo documento para la dieta
         Map<String, Object> dieta = new HashMap<>();
         dieta.put("nombre", nombre);
         dieta.put("hora", hora);
+        dieta.put("deviceId", deviceId); // Guardar el deviceId junto con la dieta
 
-        db.collection("Dieta")
+        // Usa el deviceId para referenciar el documento del dispositivo
+        db.collection("Dieta") // Colección principal de Dieta
                 .add(dieta)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(getContext(), "Dieta guardada con éxito", Toast.LENGTH_SHORT).show();
