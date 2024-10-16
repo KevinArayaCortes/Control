@@ -24,4 +24,7 @@
 
     </application>
 
+    <!-- Permiso para el almacenamiento en SharedPreferences -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 </manifest>

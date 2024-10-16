@@ -20,7 +20,7 @@
         android:textSize="34sp" />
 
     <EditText
-        android:id="@+id/editTextText3"
+        android:id="@+id/etNombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -39,7 +39,7 @@
         android:textSize="30sp" />
 
     <EditText
-        android:id="@+id/editTextText4"
+        android:id="@+id/etHora"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -50,7 +50,7 @@
         android:textSize="34sp" />
 
     <Button
-        android:id="@+id/button8"
+        android:id="@+id/btnGuardar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/aceptar"

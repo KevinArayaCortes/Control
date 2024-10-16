@@ -1,7 +1,5 @@
 package com.example.control;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,84 +7,103 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class tablaDieta extends Fragment {
 
-    private static final String PREFERENCES_NAME = "dietaPreferences";
-    private static final String KEY_NOMBRES = "nombres";
-    private static final String KEY_HORAS = "horas";
-
-    private SharedPreferences sharedPreferences;
-    private TableLayout tableLayout;
-    private Set<String> nombres;
-    private Set<String> horas;
-
-    public tablaDieta() {}
+    private TableLayout tableLayoutHorarios;
+    private FirebaseFirestore db;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_tabla_dieta, container, false);
-
-        sharedPreferences = requireActivity().getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
-        tableLayout = rootView.findViewById(R.id.tableLayoutHorarios);
-
-        cargarDatosEnTabla();
-        return rootView;
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_tabla_dieta, container, false);
     }
 
-    private void cargarDatosEnTabla() {
-        nombres = sharedPreferences.getStringSet(KEY_NOMBRES, new HashSet<>());
-        horas = sharedPreferences.getStringSet(KEY_HORAS, new HashSet<>());
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        if (nombres != null && horas != null && !nombres.isEmpty() && !horas.isEmpty()) {
-            List<String> nombresList = new ArrayList<>(nombres);
-            List<String> horasList = new ArrayList<>(horas);
-            int minLength = Math.min(nombresList.size(), horasList.size());
+        // Encuentra el TableLayout en la vista
+        tableLayoutHorarios = view.findViewById(R.id.tableLayoutHorarios);
 
-            for (int i = 0; i < minLength; i++) {
-                agregarFilaATabla(nombresList.get(i), horasList.get(i));
+        // Inicializa Firebase Firestore
+        db = FirebaseFirestore.getInstance();
+
+
+
+        // Cargar datos desde Firestore y agregarlos a la tabla
+        cargarDatosDesdeFirestore();
+    }
+
+    private void cargarDatosDesdeFirestore() {
+        // Referencia a la colección 'Dieta' en Firestore
+        CollectionReference dietaRef = db.collection("Dieta");
+
+        // Obtener documentos de la colección
+        dietaRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Iterar sobre los documentos de Firestore y agregar filas a la tabla
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String nombre = document.getString("nombre");
+                    String hora = document.getString("hora");
+
+                    // Agregar una nueva fila con los datos
+                    agregarFilaATabla(nombre, hora, document.getId());
+                }
+            } else {
+                Toast.makeText(getContext(), "Error al cargar datos", Toast.LENGTH_SHORT).show();
             }
-        }
+        });
     }
 
 
-    private void agregarFilaATabla(final String nombre, final String hora) {
-        TableRow row = new TableRow(getContext());
-        row.setLayoutParams(new TableRow.LayoutParams(
-                TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-        TextView textViewNombre = new TextView(getContext());
-        textViewNombre.setText(nombre);
-        textViewNombre.setTextColor(getResources().getColor(R.color.white));
-        row.addView(textViewNombre);
+    private void agregarFilaATabla(String nombreDieta, String horaDieta, String documentoId) {
+        // Crear una nueva fila
+        TableRow nuevaFila = new TableRow(getContext());
 
-        TextView textViewHora = new TextView(getContext());
-        textViewHora.setText(hora);
-        textViewHora.setTextColor(getResources().getColor(R.color.white));
-        row.addView(textViewHora);
+        // Crear la columna "Nombre"
+        TextView nombre = new TextView(getContext());
+        nombre.setText(nombreDieta);
+        nombre.setTextColor(getResources().getColor(R.color.white));
+        nombre.setPadding(8, 8, 8, 8);
 
-        row.setOnClickListener(v -> abrirEditarDietaFragment(nombre, hora));
+        // Crear la columna "Hora"
+        TextView hora = new TextView(getContext());
+        hora.setText(horaDieta);
+        hora.setTextColor(getResources().getColor(R.color.white));
+        hora.setPadding(8, 8, 8, 8);
 
-        tableLayout.addView(row);
+        // Añadir las celdas a la fila
+        nuevaFila.addView(nombre);
+        nuevaFila.addView(hora);
+
+        // Añadir la fila al TableLayout
+        tableLayoutHorarios.addView(nuevaFila);
+
+        // Configurar un listener para cuando se presione una fila
+        nuevaFila.setOnClickListener(v -> {
+            abrirEditarDietaFragment(nombreDieta, horaDieta, documentoId);
+        });
     }
 
-    private void abrirEditarDietaFragment(String nombre, String hora) {
-        editarDietaFragment fragment = new editarDietaFragment();
-        Bundle args = new Bundle();
-        args.putString("nombre", nombre);
-        args.putString("hora", hora);
-        fragment.setArguments(args);
+    private void abrirEditarDietaFragment(String nombre, String hora, String documentoId) {
+        // Crear una nueva instancia de editarDietaFragment con los datos pasados
+        editarDietaFragment fragment = editarDietaFragment.newInstance(nombre, hora, documentoId);
 
-        requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.contenedor, fragment)
-                .addToBackStack(null)
-                .commit();
+        // Reemplazar el fragmento en el FrameLayout 'contenedor' del MainActivity
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.contenedor, fragment); // Aquí se usa el FrameLayout del MainActivity
+        transaction.addToBackStack(null); // Para que se pueda volver atrás
+        transaction.commit();
     }
 }

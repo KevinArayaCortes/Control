@@ -1,10 +1,12 @@
 package com.example.control;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentReference;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,31 +18,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 public class editarDietaFragment extends Fragment {
-
-    private static final String PREFERENCES_NAME = "dietaPreferences";
-    private static final String KEY_NOMBRES = "nombres";
-    private static final String KEY_HORAS = "horas";
 
     private EditText etEditarNombre, etEditarHora;
     private Button btnAceptarEditar;
-    private SharedPreferences sharedPreferences;
-    private int filaSeleccionada;
+    private FirebaseFirestore db;
+    private String dietaId;  // Para almacenar el ID del documento de Firestore
 
     public editarDietaFragment() {
         // Constructor vacío requerido
     }
 
-    public static editarDietaFragment newInstance(String nombre, String hora, int index) {
+    public static editarDietaFragment newInstance(String nombre, String hora, String id) {
         editarDietaFragment fragment = new editarDietaFragment();
         Bundle args = new Bundle();
         args.putString("nombre", nombre);
         args.putString("hora", hora);
-        args.putInt("index", index);
+        args.putString("id", id);  // Pasar el ID del documento desde Firestore
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,14 +54,17 @@ public class editarDietaFragment extends Fragment {
         btnAceptarEditar = view.findViewById(R.id.btnAceptarEditar);
         Button btnBorrar = view.findViewById(R.id.btnBorrar);
 
-        // Inicializa SharedPreferences
-        sharedPreferences = requireActivity().getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        // Inicializa Firestore
+        db = FirebaseFirestore.getInstance();
 
         // Recupera los datos enviados y muestra en los inputs
         if (getArguments() != null) {
             String nombre = getArguments().getString("nombre");
             String hora = getArguments().getString("hora");
-            filaSeleccionada = getArguments().getInt("index");
+            dietaId = getArguments().getString("id");  // Obtener el ID del documento
+
+            // Log para verificar el ID de la dieta
+            Log.d("DietaFragment", "ID del documento de la dieta: " + dietaId);
 
             etEditarNombre.setText(nombre);
             etEditarHora.setText(hora);
@@ -99,60 +96,56 @@ public class editarDietaFragment extends Fragment {
             public void afterTextChanged(Editable s) {}
         });
 
-        // Configura el botón Aceptar
+        // Configura el botón Aceptar para guardar los cambios en Firestore
         btnAceptarEditar.setOnClickListener(v -> guardarCambios());
 
-        // Configura el botón Borrar
-        btnBorrar.setOnClickListener(v -> borrarFila());
+        // Configura el botón Borrar para eliminar el documento de Firestore
+        btnBorrar.setOnClickListener(v -> borrarDieta());
     }
 
     private void guardarCambios() {
-        List<String> nombres = new ArrayList<>(sharedPreferences.getStringSet(KEY_NOMBRES, new HashSet<>()));
-        List<String> horas = new ArrayList<>(sharedPreferences.getStringSet(KEY_HORAS, new HashSet<>()));
-
-        if (filaSeleccionada >= nombres.size() || filaSeleccionada >= horas.size()) {
-            Toast.makeText(getContext(), "Error: Índice fuera de rango", Toast.LENGTH_SHORT).show();
+        // Verificar el ID del documento antes de intentar actualizar
+        if (dietaId == null || dietaId.isEmpty()) {
+            Toast.makeText(getContext(), "Error: ID de la dieta no válido", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Actualiza los datos
-        nombres.set(filaSeleccionada, etEditarNombre.getText().toString());
-        horas.set(filaSeleccionada, etEditarHora.getText().toString());
+        DocumentReference dietaRef = db.collection("Dieta").document(dietaId);
 
-        // Guarda los cambios en SharedPreferences
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet(KEY_NOMBRES, new HashSet<>(nombres));
-        editor.putStringSet(KEY_HORAS, new HashSet<>(horas));
-        editor.apply();
-
-        Toast.makeText(getContext(), "Cambios guardados", Toast.LENGTH_SHORT).show();
-
-        // Regresa al fragmento anterior (tablaDieta)
-        requireActivity().getSupportFragmentManager().popBackStack();
+        // Actualizar el documento en Firestore
+        dietaRef.update("nombre", etEditarNombre.getText().toString(),
+                        "hora", etEditarHora.getText().toString())
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(getContext(), "Cambios guardados", Toast.LENGTH_SHORT).show();
+                    // Regresa al fragmento anterior (tablaDieta)
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                })
+                .addOnFailureListener(e -> {
+                    // Mostrar un mensaje más detallado en caso de error
+                    Toast.makeText(getContext(), "Error al guardar los cambios: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.d("FirestoreUpdateError", "Error al actualizar documento: " + e.getMessage());
+                });
     }
 
-    private void borrarFila() {
-        List<String> nombres = new ArrayList<>(sharedPreferences.getStringSet(KEY_NOMBRES, new HashSet<>()));
-        List<String> horas = new ArrayList<>(sharedPreferences.getStringSet(KEY_HORAS, new HashSet<>()));
-
-        if (filaSeleccionada >= nombres.size() || filaSeleccionada >= horas.size()) {
-            Toast.makeText(getContext(), "Error: Índice fuera de rango", Toast.LENGTH_SHORT).show();
+    private void borrarDieta() {
+        // Verificar el ID del documento antes de intentar eliminar
+        if (dietaId == null || dietaId.isEmpty()) {
+            Toast.makeText(getContext(), "Error: ID de la dieta no válido", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Eliminar el elemento seleccionado
-        nombres.remove(filaSeleccionada);
-        horas.remove(filaSeleccionada);
+        DocumentReference dietaRef = db.collection("Dieta").document(dietaId);
 
-        // Guardar los cambios en SharedPreferences
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet(KEY_NOMBRES, new HashSet<>(nombres));
-        editor.putStringSet(KEY_HORAS, new HashSet<>(horas));
-        editor.apply();
-
-        Toast.makeText(getContext(), "Fila eliminada", Toast.LENGTH_SHORT).show();
-
-        // Regresar al fragmento anterior (tablaDieta)
-        requireActivity().getSupportFragmentManager().popBackStack();
+        // Eliminar el documento de Firestore
+        dietaRef.delete()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(getContext(), "Dieta eliminada", Toast.LENGTH_SHORT).show();
+                    // Regresa al fragmento anterior (tablaDieta)
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Error al eliminar la dieta: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.d("FirestoreDeleteError", "Error al eliminar documento: " + e.getMessage());
+                });
     }
 }

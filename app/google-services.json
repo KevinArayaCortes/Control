@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1086296079307",
+    "project_id": "control-16833",
+    "storage_bucket": "control-16833.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086296079307:android:9777e3c6a11262c3fa944e",
+        "android_client_info": {
+          "package_name": "com.example.control"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSBzFcNlw9RhbwkzflmHjEILC9e7Ruvvw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,7 +1,6 @@
 package com.example.control;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import com.google.firebase.firestore.FirebaseFirestore;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,22 +10,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class crearDietaFragment extends Fragment {
 
-    private static final String PREFERENCES_NAME = "dietaPreferences";
-    private static final String KEY_NOMBRES = "nombres";
-    private static final String KEY_HORAS = "horas";
-
-    private EditText editTextTime, editTextNombre;
-    private SharedPreferences sharedPreferences;
+    private EditText etNombre, etHora;
+    private Button btnGuardar;
+    private FirebaseFirestore db;
 
     public crearDietaFragment() {
         // Constructor vacío requerido
@@ -41,12 +36,16 @@ public class crearDietaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        editTextTime = view.findViewById(R.id.editTextText4);
-        editTextNombre = view.findViewById(R.id.editTextText3);
+        // Inicializa las vistas
+        etNombre = view.findViewById(R.id.etNombre);
+        etHora = view.findViewById(R.id.etHora);
+        btnGuardar = view.findViewById(R.id.btnGuardar);
 
-        sharedPreferences = requireActivity().getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        // Inicializa Firestore
+        db = FirebaseFirestore.getInstance();
 
-        editTextTime.addTextChangedListener(new TextWatcher() {
+        // Formato automático de la hora
+        etHora.addTextChangedListener(new TextWatcher() {
             private boolean isUpdating = false;
 
             @Override
@@ -56,55 +55,48 @@ public class crearDietaFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isUpdating) return;
 
-                String currentText = s.toString();
-                String cleanText = currentText.replace(":", "");
-
-                if (cleanText.length() > 2) {
-                    cleanText = cleanText.substring(0, 2) + ":" + cleanText.substring(2);
+                String input = s.toString().replace(":", "");
+                if (input.length() > 2) {
+                    input = input.substring(0, 2) + ":" + input.substring(2);
                 }
 
                 isUpdating = true;
-                editTextTime.setText(cleanText);
-                editTextTime.setSelection(cleanText.length());
+                etHora.setText(input);
+                etHora.setSelection(input.length());
                 isUpdating = false;
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                String currentText = editTextTime.getText().toString();
-                if (!currentText.matches("^([01]\\d|2[0-3]):([0-5]\\d)$")) {
-                    editTextTime.setError("Formato de hora inválido (HH:mm)");
-                }
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
-        Button btnAceptar = view.findViewById(R.id.button8);
-        btnAceptar.setOnClickListener(v -> {
-            String horaIngresada = editTextTime.getText().toString();
-            String nombreIngresado = editTextNombre.getText().toString();
-
-            if (!nombreIngresado.isEmpty() && horaIngresada.matches("^([01]\\d|2[0-3]):([0-5]\\d)$")) {
-                guardarDatosEnSharedPreferences(nombreIngresado, horaIngresada);
-                Toast.makeText(getActivity(), "Datos guardados", Toast.LENGTH_SHORT).show();
-
-                // Regresa al fragmento anterior (DietaFragment)
-                requireActivity().getSupportFragmentManager().popBackStack();
-            } else {
-                Toast.makeText(getActivity(), "Ingrese un nombre y una hora válida (HH:mm)", Toast.LENGTH_SHORT).show();
-            }
-        });
+        // Configura el botón Guardar
+        btnGuardar.setOnClickListener(v -> guardarDieta());
     }
 
-    private void guardarDatosEnSharedPreferences(String nombre, String hora) {
-        Set<String> nombres = new HashSet<>(sharedPreferences.getStringSet(KEY_NOMBRES, new HashSet<>()));
-        Set<String> horas = new HashSet<>(sharedPreferences.getStringSet(KEY_HORAS, new HashSet<>()));
+    private void guardarDieta() {
+        String nombre = etNombre.getText().toString();
+        String hora = etHora.getText().toString();
 
-        nombres.add(nombre);
-        horas.add(hora);
+        if (nombre.isEmpty() || hora.isEmpty()) {
+            Toast.makeText(getContext(), "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet(KEY_NOMBRES, nombres);
-        editor.putStringSet(KEY_HORAS, horas);
-        editor.apply();
+        // Crea un nuevo documento en la colección "Dieta"
+        Map<String, Object> dieta = new HashMap<>();
+        dieta.put("nombre", nombre);
+        dieta.put("hora", hora);
+
+        db.collection("Dieta")
+                .add(dieta)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(getContext(), "Dieta guardada con éxito", Toast.LENGTH_SHORT).show();
+                    // Regresa al fragmento anterior (tablaDieta)
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Error al guardar la dieta", Toast.LENGTH_SHORT).show();
+                });
     }
 }
