@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.control.utils.DeviceIdManager;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -23,7 +22,6 @@ public class tablaDieta extends Fragment {
 
     private TableLayout tableLayoutHorarios;
     private FirebaseFirestore db;
-    private String deviceId; // Para almacenar el ID único del dispositivo
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,7 +37,7 @@ public class tablaDieta extends Fragment {
 
         // Inicializa Firebase Firestore
         db = FirebaseFirestore.getInstance();
-        deviceId = DeviceIdManager.getDeviceId(requireContext()); // Obtener el ID único del dispositivo
+
 
         // Cargar datos desde Firestore y agregarlos a la tabla
         cargarDatosDesdeFirestore();
@@ -49,8 +47,8 @@ public class tablaDieta extends Fragment {
         // Referencia a la colección 'Dieta' en Firestore
         CollectionReference dietaRef = db.collection("Dieta");
 
-        // Obtener documentos de la colección donde el campo deviceId coincida
-        dietaRef.whereEqualTo("deviceId", deviceId).get().addOnCompleteListener(task -> {
+        // Obtener documentos de la colección
+        dietaRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 // Iterar sobre los documentos de Firestore y agregar filas a la tabla
                 for (QueryDocumentSnapshot document : task.getResult()) {
@@ -65,6 +63,7 @@ public class tablaDieta extends Fragment {
             }
         });
     }
+
 
     private void agregarFilaATabla(String nombreDieta, String horaDieta, String documentoId) {
         // Crear una nueva fila

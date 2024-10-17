@@ -10,7 +10,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".editarActividadFragment">
 
-    <!-- EditText para editar el nombre de la actividad -->
     <TextView
         android:id="@+id/tvEditarActividad"
         android:layout_width="match_parent"
@@ -30,7 +29,6 @@
         android:textColor="@color/white"
         android:textSize="34sp" />
 
-    <!-- EditText para editar la hora o duración de la actividad -->
     <TextView
         android:id="@+id/tvEditarTiempo"
         android:layout_width="match_parent"
@@ -51,7 +49,6 @@
         android:textColor="@color/white"
         android:textSize="34sp" />
 
-    <!-- Botón Aceptar -->
     <Button
         android:id="@+id/btnAceptarEditarActividad"
         android:layout_width="match_parent"
@@ -59,7 +56,6 @@
         android:text="@string/aceptar"
         android:textSize="34sp" />
 
-    <!-- Botón Borrar Actividad -->
     <Button
         android:id="@+id/btnBorrarActividad"
         android:layout_width="match_parent"
@@ -68,7 +64,6 @@
         android:text="@string/borrar"
         android:textSize="34sp" />
 
-    <!-- Botón Comenzar -->
     <Button
         android:id="@+id/btnComenzar"
         android:layout_width="match_parent"
@@ -76,5 +71,4 @@
         android:layout_marginTop="10dp"
         android:text="@string/comenzar"
         android:textSize="34sp" />
-
 </LinearLayout>

@@ -17,10 +17,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Fila de encabezado -->
         <TableRow>
 
-            <!-- Celda del encabezado para "Actividad" -->
             <TextView
                 android:text="Actividad"
                 android:padding="8dp"
@@ -30,7 +28,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <!-- Celda del encabezado para "Tiempo" -->
             <TextView
                 android:text="Tiempo"
                 android:padding="8dp"
@@ -39,12 +36,8 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
         </TableRow>
 
-        <!-- Fila de ejemplo con datos -->
-        <TableRow/>
-
+        <!-- Las filas se llenarán dinámicamente -->
     </TableLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

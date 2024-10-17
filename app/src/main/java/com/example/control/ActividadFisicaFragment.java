@@ -24,17 +24,16 @@ public class ActividadFisicaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Cargar el fragmento tablaActividad en el fragmentContainerViewActividad
-        Fragment tablaActividadFragment = new tablaActividad();
+        // Cargar tablaActividad en el contenedor del fragmento
+        Fragment tablaActividad = new tablaActividad();
         getParentFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainerViewActividad, tablaActividadFragment)
+                .replace(R.id.fragmentContainerViewActividad, tablaActividad)
                 .commit();
 
-        // Navegar a crearActividadFragment al presionar el botón
+        // Navegar al fragmento de creación de actividad al presionar el botón
         view.findViewById(R.id.crearActividadButton).setOnClickListener(v -> {
-            Fragment crearActividadFragment = new crearActividadFragment();
             requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.contenedor, crearActividadFragment)
+                    .replace(R.id.contenedor, new crearActividadFragment())
                     .addToBackStack(null)
                     .commit();
         });
