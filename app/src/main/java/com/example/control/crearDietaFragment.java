@@ -1,5 +1,6 @@
 package com.example.control;
 
+import com.example.control.utils.DeviceIdManager;
 import com.google.firebase.firestore.FirebaseFirestore;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,7 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +22,7 @@ public class crearDietaFragment extends Fragment {
     private EditText etNombre, etHora;
     private Button btnGuardar;
     private FirebaseFirestore db;
+    private String deviceId;
 
     public crearDietaFragment() {
         // Constructor vacío requerido
@@ -36,13 +37,16 @@ public class crearDietaFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // Inicializa DeviceIdManager y obtiene el ID único del dispositivo
+        deviceId = DeviceIdManager.getDeviceId(requireContext());
+
+        // Inicializa Firestore
+        db = FirebaseFirestore.getInstance();
+
         // Inicializa las vistas
         etNombre = view.findViewById(R.id.etNombre);
         etHora = view.findViewById(R.id.etHora);
         btnGuardar = view.findViewById(R.id.btnGuardar);
-
-        // Inicializa Firestore
-        db = FirebaseFirestore.getInstance();
 
         // Formato automático de la hora
         etHora.addTextChangedListener(new TextWatcher() {
@@ -83,10 +87,11 @@ public class crearDietaFragment extends Fragment {
             return;
         }
 
-        // Crea un nuevo documento en la colección "Dieta"
+        // Crea un nuevo documento en la colección "Dieta" con el ID del dispositivo
         Map<String, Object> dieta = new HashMap<>();
         dieta.put("nombre", nombre);
         dieta.put("hora", hora);
+        dieta.put("deviceId", deviceId);  // Guarda el ID del dispositivo
 
         db.collection("Dieta")
                 .add(dieta)

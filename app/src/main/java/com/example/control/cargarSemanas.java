@@ -8,15 +8,26 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import com.example.control.R;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 public class cargarSemanas extends Fragment {
+
+    private FirebaseFirestore db;
+    private String semana;
+    private String deviceId;
+
+    public cargarSemanas(String semana, String deviceId) {
+        this.semana = semana;
+        this.deviceId = deviceId;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cargar_semanas, container, false);
+
+        db = FirebaseFirestore.getInstance();
 
         // Obtener referencias a los TextViews
         TextView lunesTiempo = view.findViewById(R.id.lunes_tiempo);
@@ -27,15 +38,61 @@ public class cargarSemanas extends Fragment {
         TextView sabadoTiempo = view.findViewById(R.id.sabado_tiempo);
         TextView domingoTiempo = view.findViewById(R.id.domingo_tiempo);
 
-        // Establecer los valores en los TextViews (ejemplo)
-        lunesTiempo.setText("5 horas");
-        martesTiempo.setText("6 horas");
-        miercolesTiempo.setText("4 horas");
-        juevesTiempo.setText("7 horas");
-        viernesTiempo.setText("3 horas");
-        sabadoTiempo.setText("8 horas");
-        domingoTiempo.setText("2 horas");
+        // Recuperar los tiempos desde Firestore para la semana y el dispositivo actuales
+        cargarTiemposDesdeFirestore(lunesTiempo, martesTiempo, miercolesTiempo, juevesTiempo, viernesTiempo, sabadoTiempo, domingoTiempo);
 
         return view;
+    }
+
+    private void cargarTiemposDesdeFirestore(TextView lunes, TextView martes, TextView miercoles, TextView jueves, TextView viernes, TextView sabado, TextView domingo) {
+        // Cambiar a la colección que almacena los tiempos diarios por semana
+        db.collection("tiemposDiarios")
+                .document(deviceId)
+                .collection(semana)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        String dia = document.getId();
+                        Long tiempoTotal = document.getLong("tiempo_total");
+
+                        // Asignar el tiempo al TextView correspondiente
+                        if (tiempoTotal != null) {
+                            String tiempo = convertirSegundosATiempo(tiempoTotal);
+                            switch (dia) {
+                                case "lunes":
+                                    lunes.setText(tiempo);
+                                    break;
+                                case "martes":
+                                    martes.setText(tiempo);
+                                    break;
+                                case "miércoles":
+                                    miercoles.setText(tiempo);
+                                    break;
+                                case "jueves":
+                                    jueves.setText(tiempo);
+                                    break;
+                                case "viernes":
+                                    viernes.setText(tiempo);
+                                    break;
+                                case "sábado":
+                                    sabado.setText(tiempo);
+                                    break;
+                                case "domingo":
+                                    domingo.setText(tiempo);
+                                    break;
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Manejar errores en la recuperación de datos
+                });
+    }
+
+    // Método para convertir segundos a formato mm:ss
+    private String convertirSegundosATiempo(long segundos) {
+        long minutos = segundos / 60;
+        long seg = segundos % 60;
+        return String.format("%02d:%02d", minutos, seg);
     }
 }

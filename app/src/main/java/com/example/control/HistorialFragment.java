@@ -1,60 +1,133 @@
 package com.example.control;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+
+import com.example.control.utils.DeviceIdManager;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HistorialFragment extends Fragment {
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_historial, container, false);
+    private FirebaseFirestore db;
 
-        Button semana1Btn = view.findViewById(R.id.button5);
-        Button semana2Btn = view.findViewById(R.id.button6);
-        Button semana3Btn = view.findViewById(R.id.button12);
-        Button semana4Btn = view.findViewById(R.id.button13);
-
-        semana1Btn.setOnClickListener(v -> cargarFragmentoSemana("semana1"));
-        semana2Btn.setOnClickListener(v -> cargarFragmentoSemana("semana2"));
-        semana3Btn.setOnClickListener(v -> cargarFragmentoSemana("semana3"));
-        semana4Btn.setOnClickListener(v -> cargarFragmentoSemana("semana4"));
-
-        return view;
+    public HistorialFragment() {
+        // Constructor vacío requerido
     }
 
-    private void cargarFragmentoSemana(String semana) {
-        Fragment fragment;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        db = FirebaseFirestore.getInstance();
+        calcularYGuardarTiempoDiario();
+    }
 
-        switch (semana) {
-            case "semana1":
-                fragment = new cargarSemanas();  // Aquí cargamos el fragmento de la semana 1
-                break;
-            case "semana2":
-                fragment = new cargarSemanas2(); // Fragmento de la semana 2
-                break;
-            case "semana3":
-                fragment = new cargarSemanas3(); // Fragmento de la semana 3
-                break;
-            case "semana4":
-                fragment = new cargarSemanas4(); // Fragmento de la semana 4
-                break;
-            default:
-                fragment = new cargarSemanas();  // Por defecto semana 1
+    private void calcularYGuardarTiempoDiario() {
+        String deviceId = DeviceIdManager.getDeviceId(requireContext());
+        String semanaActual = obtenerSemanaActual(); // Método para obtener el nombre de la semana
+        Map<String, Integer> tiemposDiarios = new HashMap<>();
+
+        // Inicializar los tiempos para cada día
+        tiemposDiarios.put("lunes", 0);
+        tiemposDiarios.put("martes", 0);
+        tiemposDiarios.put("miércoles", 0);
+        tiemposDiarios.put("jueves", 0);
+        tiemposDiarios.put("viernes", 0);
+        tiemposDiarios.put("sábado", 0);
+        tiemposDiarios.put("domingo", 0);
+
+        // Obtener actividades del Firestore
+        db.collection("ActividadFisica")
+                .document(deviceId)
+                .collection("Actividades")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String tiempo = document.getString("tiempo");
+                            String diaActividad = obtenerDiaDeLaActividad(); // Método para obtener el día de la actividad
+
+                            // Convertir tiempo a segundos
+                            int tiempoEnSegundos = convertirTiempoASegundos(tiempo);
+                            // Acumular el tiempo en el día correspondiente
+                            tiemposDiarios.put(diaActividad, tiemposDiarios.get(diaActividad) + tiempoEnSegundos);
+                        }
+                        // Guardar los tiempos acumulados en Firestore
+                        guardarTiemposDiarios(tiemposDiarios, deviceId, semanaActual);
+                    } else {
+                        Log.w("Firestore", "Error al obtener actividades.", task.getException());
+                    }
+                });
+    }
+
+    private void guardarTiemposDiarios(Map<String, Integer> tiemposDiarios, String deviceId, String semanaActual) {
+        for (Map.Entry<String, Integer> entry : tiemposDiarios.entrySet()) {
+            String dia = entry.getKey();
+            int tiempoTotal = entry.getValue();
+
+            // Referencia al documento correspondiente al día de la semana
+            db.collection("tiemposDiarios")
+                    .document(deviceId)
+                    .collection(semanaActual)
+                    .document(dia)
+                    .set(Map.of("tiempo_total", FieldValue.increment(tiempoTotal)), SetOptions.merge())
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("Firestore", "Tiempo diario actualizado para " + dia + ": " + tiempoTotal);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.w("Firestore", "Error al actualizar el tiempo diario para " + dia, e);
+                    });
         }
+    }
 
-        // Realizar la transacción para reemplazar el contenido del contenedor en MainActivity
-        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.contenedor, fragment);  // Aquí usamos el ID del FrameLayout en MainActivity
-        transaction.addToBackStack(null);
-        transaction.commit();
+    private int convertirTiempoASegundos(String tiempo) {
+        String[] partes = tiempo.split(":");
+        if (partes.length == 2) {
+            int minutos = Integer.parseInt(partes[0]);
+            int segundos = Integer.parseInt(partes[1]);
+            return minutos * 60 + segundos; // Convertir a segundos
+        }
+        return 0; // En caso de que no esté en el formato esperado
+    }
+
+    private String obtenerSemanaActual() {
+        // Lógica para obtener la semana actual, por ejemplo: "Semana_1"
+        Calendar calendar = Calendar.getInstance();
+        int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+        return "Semana_" + weekOfYear; // Nombre de la semana
+    }
+
+    private String obtenerDiaDeLaActividad() {
+        // Implementa la lógica para determinar el día de la actividad
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        switch (dayOfWeek) {
+            case Calendar.MONDAY:
+                return "lunes";
+            case Calendar.TUESDAY:
+                return "martes";
+            case Calendar.WEDNESDAY:
+                return "miércoles";
+            case Calendar.THURSDAY:
+                return "jueves";
+            case Calendar.FRIDAY:
+                return "viernes";
+            case Calendar.SATURDAY:
+                return "sábado";
+            case Calendar.SUNDAY:
+                return "domingo";
+            default:
+                return ""; // En caso de error
+        }
     }
 }

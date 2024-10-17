@@ -1,7 +1,6 @@
 plugins {
-    // Utiliza solo una opción para aplicar el plugin de la aplicación Android
-    id("com.android.application")
-    id("com.google.gms.google-services") // Mantén este plugin para los servicios de Firebase
+    id(libs.plugins.android.application.get().pluginId)
+    id("com.google.gms.google-services") // Para Firebase
 }
 
 android {
@@ -42,7 +41,7 @@ dependencies {
     // Firebase BOM para gestionar las versiones de Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
 
-    // Dependencias de la librería
+    // Dependencias utilizando accesores de versiones desde `libs.versions.toml`
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -50,6 +49,11 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.firebase.firestore)
+
+    // Excluir la versión conflictiva annotation-jvm
+    implementation("androidx.annotation:annotation:1.9.0") {
+        exclude(group = "androidx.annotation", module = "annotation-jvm")
+    }
 
     // Testing
     testImplementation(libs.junit)

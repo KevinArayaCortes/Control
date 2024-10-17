@@ -162,18 +162,4 @@
 
     </TableLayout>
 
-    <ImageView
-        android:id="@+id/imageView13"
-        android:layout_width="87dp"
-        android:layout_height="81dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/table_historial"
-        app:layout_constraintEnd_toEndOf="@+id/table_historial"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@android:drawable/ic_menu_revert" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,7 +2,6 @@ package com.example.control;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentReference;
-
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -112,7 +110,7 @@ public class editarDietaFragment extends Fragment {
 
         DocumentReference dietaRef = db.collection("Dieta").document(dietaId);
 
-        // Actualizar el documento en Firestore
+        // Actualizar el documento en Firestore sin cambiar el deviceId
         dietaRef.update("nombre", etEditarNombre.getText().toString(),
                         "hora", etEditarHora.getText().toString())
                 .addOnSuccessListener(aVoid -> {
@@ -121,7 +119,6 @@ public class editarDietaFragment extends Fragment {
                     requireActivity().getSupportFragmentManager().popBackStack();
                 })
                 .addOnFailureListener(e -> {
-                    // Mostrar un mensaje más detallado en caso de error
                     Toast.makeText(getContext(), "Error al guardar los cambios: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     Log.d("FirestoreUpdateError", "Error al actualizar documento: " + e.getMessage());
                 });
