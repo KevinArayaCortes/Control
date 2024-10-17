@@ -1,6 +1,7 @@
 package com.example.control;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ public class cargarSemanas extends Fragment {
     private FirebaseFirestore db;
     private String semana;
     private String deviceId;
+    private static final String TAG = "cargarSemanas";
 
     public cargarSemanas(String semana, String deviceId) {
         this.semana = semana;
@@ -51,41 +53,60 @@ public class cargarSemanas extends Fragment {
                 .collection(semana)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        String dia = document.getId();
-                        Long tiempoTotal = document.getLong("tiempo_total");
+                    if (queryDocumentSnapshots.isEmpty()) {
+                        Log.d(TAG, "No se encontraron documentos para la semana " + semana);
+                        // Opcional: Muestra un mensaje en los TextView si no hay datos
+                        lunes.setText("0:00");
+                        martes.setText("0:00");
+                        miercoles.setText("0:00");
+                        jueves.setText("0:00");
+                        viernes.setText("0:00");
+                        sabado.setText("0:00");
+                        domingo.setText("0:00");
+                    } else {
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            String dia = document.getId();
+                            Long tiempoTotal = document.getLong("tiempo_total");
 
-                        // Asignar el tiempo al TextView correspondiente
-                        if (tiempoTotal != null) {
-                            String tiempo = convertirSegundosATiempo(tiempoTotal);
-                            switch (dia) {
-                                case "lunes":
-                                    lunes.setText(tiempo);
-                                    break;
-                                case "martes":
-                                    martes.setText(tiempo);
-                                    break;
-                                case "miércoles":
-                                    miercoles.setText(tiempo);
-                                    break;
-                                case "jueves":
-                                    jueves.setText(tiempo);
-                                    break;
-                                case "viernes":
-                                    viernes.setText(tiempo);
-                                    break;
-                                case "sábado":
-                                    sabado.setText(tiempo);
-                                    break;
-                                case "domingo":
-                                    domingo.setText(tiempo);
-                                    break;
+                            Log.d(TAG, "Día: " + dia + " | Tiempo total: " + tiempoTotal);
+
+                            // Asignar el tiempo al TextView correspondiente
+                            if (tiempoTotal != null) {
+                                String tiempo = convertirSegundosATiempo(tiempoTotal);
+                                switch (dia) {
+                                    case "lunes":
+                                        lunes.setText(tiempo);
+                                        break;
+                                    case "martes":
+                                        martes.setText(tiempo);
+                                        break;
+                                    case "miércoles":
+                                        miercoles.setText(tiempo);
+                                        break;
+                                    case "jueves":
+                                        jueves.setText(tiempo);
+                                        break;
+                                    case "viernes":
+                                        viernes.setText(tiempo);
+                                        break;
+                                    case "sábado":
+                                        sabado.setText(tiempo);
+                                        break;
+                                    case "domingo":
+                                        domingo.setText(tiempo);
+                                        break;
+                                    default:
+                                        Log.w(TAG, "Día no reconocido: " + dia);
+                                        break;
+                                }
+                            } else {
+                                Log.w(TAG, "El campo 'tiempo_total' no existe para el día " + dia);
                             }
                         }
                     }
                 })
                 .addOnFailureListener(e -> {
-                    // Manejar errores en la recuperación de datos
+                    Log.e(TAG, "Error al recuperar los datos de Firestore: ", e);
                 });
     }
 

@@ -2,6 +2,10 @@ package com.example.control;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -9,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import com.example.control.utils.DeviceIdManager;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.SetOptions;
 
@@ -26,15 +29,54 @@ public class HistorialFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflar el layout del fragmento historial
+        return inflater.inflate(R.layout.fragment_historial, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Inicializar Firestore
         db = FirebaseFirestore.getInstance();
         calcularYGuardarTiempoDiario();
+
+        // Configura los eventos de los botones
+        Button buttonSemana1 = view.findViewById(R.id.button5);
+        buttonSemana1.setOnClickListener(v -> {
+            cargarSemanaFragment("Semana_1");  // Cargar fragmento de la semana 1
+        });
+
+        Button buttonSemana2 = view.findViewById(R.id.button6);
+        buttonSemana2.setOnClickListener(v -> {
+            cargarSemanaFragment("Semana_2");  // Cargar fragmento de la semana 2
+        });
+
+        Button buttonSemana3 = view.findViewById(R.id.button12);
+        buttonSemana3.setOnClickListener(v -> {
+            cargarSemanaFragment("Semana_3");  // Cargar fragmento de la semana 3
+        });
+
+        Button buttonSemana4 = view.findViewById(R.id.button13);
+        buttonSemana4.setOnClickListener(v -> {
+            cargarSemanaFragment("Semana_4");  // Cargar fragmento de la semana 4
+        });
+    }
+
+    // Método para cargar el fragmento de la semana seleccionada
+    private void cargarSemanaFragment(String semana) {
+        String deviceId = DeviceIdManager.getDeviceId(requireContext());  // Obtiene el ID del dispositivo
+        cargarSemanas fragmentSemana = new cargarSemanas(semana, deviceId);  // Crear una nueva instancia del fragmento
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.contenedor, fragmentSemana)  // Reemplazar el fragmento en el contenedor
+                .addToBackStack(null)  // Añadir a la pila para poder volver atrás
+                .commit();
     }
 
     private void calcularYGuardarTiempoDiario() {
         String deviceId = DeviceIdManager.getDeviceId(requireContext());
-        String semanaActual = obtenerSemanaActual(); // Método para obtener el nombre de la semana
+        String semanaActual = obtenerSemanaActual(); // Obtener la semana actual (de 1 a 4)
         Map<String, Integer> tiemposDiarios = new HashMap<>();
 
         // Inicializar los tiempos para cada día
@@ -55,11 +97,10 @@ public class HistorialFragment extends Fragment {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String tiempo = document.getString("tiempo");
-                            String diaActividad = obtenerDiaDeLaActividad(); // Método para obtener el día de la actividad
+                            String diaActividad = obtenerDiaDeLaActividad();
 
                             // Convertir tiempo a segundos
                             int tiempoEnSegundos = convertirTiempoASegundos(tiempo);
-                            // Acumular el tiempo en el día correspondiente
                             tiemposDiarios.put(diaActividad, tiemposDiarios.get(diaActividad) + tiempoEnSegundos);
                         }
                         // Guardar los tiempos acumulados en Firestore
@@ -75,7 +116,7 @@ public class HistorialFragment extends Fragment {
             String dia = entry.getKey();
             int tiempoTotal = entry.getValue();
 
-            // Referencia al documento correspondiente al día de la semana
+            // Guardar en Firestore, sobrescribiendo los datos cada mes
             db.collection("tiemposDiarios")
                     .document(deviceId)
                     .collection(semanaActual)
@@ -95,20 +136,20 @@ public class HistorialFragment extends Fragment {
         if (partes.length == 2) {
             int minutos = Integer.parseInt(partes[0]);
             int segundos = Integer.parseInt(partes[1]);
-            return minutos * 60 + segundos; // Convertir a segundos
+            return minutos * 60 + segundos;
         }
-        return 0; // En caso de que no esté en el formato esperado
+        return 0;
     }
 
     private String obtenerSemanaActual() {
-        // Lógica para obtener la semana actual, por ejemplo: "Semana_1"
         Calendar calendar = Calendar.getInstance();
         int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
-        return "Semana_" + weekOfYear; // Nombre de la semana
+        // Limitar el número de semana de 1 a 4
+        int semanaDelMes = ((calendar.get(Calendar.DAY_OF_MONTH) - 1) / 7) + 1; // Calcula la semana del mes
+        return "Semana_" + (semanaDelMes > 4 ? 1 : semanaDelMes); // Volver a Semana_1 si es mayor a 4
     }
 
     private String obtenerDiaDeLaActividad() {
-        // Implementa la lógica para determinar el día de la actividad
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         switch (dayOfWeek) {
@@ -127,7 +168,7 @@ public class HistorialFragment extends Fragment {
             case Calendar.SUNDAY:
                 return "domingo";
             default:
-                return ""; // En caso de error
+                return "";
         }
     }
 }
