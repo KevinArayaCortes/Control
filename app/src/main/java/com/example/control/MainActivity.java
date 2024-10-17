@@ -9,13 +9,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatDelegate;
-
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-
 import com.google.android.material.navigation.NavigationView;
-import com.example.control.utils.DeviceIdManager;  // Importamos la clase
+import com.example.control.utils.DeviceIdManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity", "ID del dispositivo: " + deviceId);
 
         // Configuración del Toolbar
-        Toolbar tb = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar tb = findViewById(R.id.toolbar);
         setSupportActionBar(tb);
 
         // Configuración del NavigationView (identificador @id/barra)
@@ -77,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this,
                 drawerLayout,
                 R.string.navigation_drawer_open,
@@ -92,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
                 } else {
-                    drawerLayout.openDrawer(Gravity.START);
+                    drawerLayout.openDrawer(GravityCompat.START);
                 }
             }
         });

@@ -67,9 +67,9 @@ public class HistorialFragment extends Fragment {
     // Método para cargar el fragmento de la semana seleccionada
     private void cargarSemanaFragment(String semana) {
         String deviceId = DeviceIdManager.getDeviceId(requireContext());  // Obtiene el ID del dispositivo
-        cargarSemanas fragmentSemana = new cargarSemanas(semana, deviceId);  // Crear una nueva instancia del fragmento
+        cargarSemanas fragmentSemana = new cargarSemanas(semana, deviceId);
         requireActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.contenedor, fragmentSemana)  // Reemplazar el fragmento en el contenedor
+                .replace(R.id.contenedor, fragmentSemana)
                 .addToBackStack(null)  // Añadir a la pila para poder volver atrás
                 .commit();
     }
