@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Configuración del NavigationView (identificador @id/barra)
         NavigationView navigationView = findViewById(R.id.barra);
+        drawerLayout = findViewById(R.id.Main);  // Inicializamos drawerLayout
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -64,30 +66,33 @@ public class MainActivity extends AppCompatActivity {
                     DesafioFragment de = new DesafioFragment();
                     getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, de).commit();
                 }
-                return false;
+
+                // Cerrar el menú lateral automáticamente
+                drawerLayout.closeDrawer(GravityCompat.START);
+
+                return true;  // Cambiado a true para reflejar que la opción fue seleccionada
             }
         });
 
-        DrawerLayout dl = findViewById(R.id.Main);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this,
-                dl,
+                drawerLayout,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close
         );
-        dl.addDrawerListener(toggle);
+        drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         tb.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (dl.isDrawerOpen(GravityCompat.START)) {
-                    dl.closeDrawer(GravityCompat.START);
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
                 } else {
-                    dl.openDrawer((int) Gravity.START);
+                    drawerLayout.openDrawer(Gravity.START);
                 }
             }
         });
