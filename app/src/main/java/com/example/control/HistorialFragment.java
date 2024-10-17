@@ -1,5 +1,7 @@
 package com.example.control;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -88,6 +90,17 @@ public class HistorialFragment extends Fragment {
         tiemposDiarios.put("sábado", 0);
         tiemposDiarios.put("domingo", 0);
 
+        // Verificar si ya se ha actualizado hoy
+        SharedPreferences prefs = requireContext().getSharedPreferences("HistorialFragment", Context.MODE_PRIVATE);
+        String fechaHoy = obtenerFechaActual(); // Obtener la fecha de hoy en formato String
+        String ultimaFecha = prefs.getString("ultimaActualizacion", "");
+
+        if (fechaHoy.equals(ultimaFecha)) {
+            // Ya se ha actualizado hoy, no hacer nada
+            Log.d("HistorialFragment", "El tiempo ya ha sido sumado hoy.");
+            return;
+        }
+
         // Obtener actividades del Firestore
         db.collection("ActividadFisica")
                 .document(deviceId)
@@ -105,6 +118,11 @@ public class HistorialFragment extends Fragment {
                         }
                         // Guardar los tiempos acumulados en Firestore
                         guardarTiemposDiarios(tiemposDiarios, deviceId, semanaActual);
+
+                        // Actualizar la última fecha de actualización en SharedPreferences
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("ultimaActualizacion", fechaHoy);
+                        editor.apply();
                     } else {
                         Log.w("Firestore", "Error al obtener actividades.", task.getException());
                     }
@@ -170,5 +188,13 @@ public class HistorialFragment extends Fragment {
             default:
                 return "";
         }
+    }
+
+    private String obtenerFechaActual() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1; // Los meses empiezan en 0
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        return year + "-" + month + "-" + day; // Devuelve la fecha en formato "YYYY-MM-DD"
     }
 }
